@@ -1,0 +1,10 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "java",
+    "CRON_EXPRESSION": "0 0 8 * * *",
+    "APPLICATION_URL": "http://localhost:3000",
+    "APPLICATION_PATH": "users"
+  }
+}

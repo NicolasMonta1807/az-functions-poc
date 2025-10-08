@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.montanez</groupId>
+    <artifactId>Java</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Azure Java Functions</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>17</java.version>
+        <azure.functions.maven.plugin.version>1.39.0</azure.functions.maven.plugin.version>
+        <azure.functions.java.library.version>3.1.0</azure.functions.java.library.version>
+
+        <!-- AZURE FUNCTION CONFIG -->
+        <azure.functions.maven.plugin.version>1.22.0</azure.functions.maven.plugin.version>
+        <functionAppName>func-sitemap-test-np-1</functionAppName>
+        <functionAppRegion>eastus</functionAppRegion>
+        <functionResourceGroup>rg-student-account</functionResourceGroup>
+        <functionAppServicePlanName>asp-studentplan-ue-np-1</functionAppServicePlanName>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.microsoft.azure.functions</groupId>
+            <artifactId>azure-functions-java-library</artifactId>
+            <version>${azure.functions.java.library.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>azure-functions-maven-plugin</artifactId>
+                <version>${azure.functions.maven.plugin.version}</version>
+                <configuration>
+                    <appName>${functionAppName}</appName>
+                    <resourceGroup>${functionResourceGroup}</resourceGroup>
+                    <region>${functionAppRegion}</region>
+                    <subscriptionId>${env.ARM_SUBSCRIPTION_ID}</subscriptionId>
+                    <appServicePlanName>${functionAppServicePlanName}</appServicePlanName>
+
+                    <hostJson>${project.basedir}/host.json</hostJson>
+                    <localSettingsJson>${project.basedir}/local.settings.json</localSettingsJson>
+
+                    <runtime>
+                        <os>linux</os>
+                        <javaVersion>17</javaVersion>
+
+                    </runtime>
+                    <auth>
+                        <type>service_principal</type>
+                        <client>${env.ARM_CLIENT_ID}</client>
+                        <tenant>${env.ARM_TENANT_ID}</tenant>
+                        <key>${env.ARM_CLIENT_SECRET}</key>
+                        <environment>azure</environment>
+                    </auth>
+
+                    <appSettings>
+                        <property>
+                            <name>FUNCTIONS_EXTENSION_VERSION</name>
+                            <value>~4</value>
+                        </property>
+                        <property>
+                            <name>SITEMAP_URL</name>
+                            <value>${env.SITEMAP_URL}</value>
+                        </property>
+                        <property>
+                            <name>GENERATION_PATH</name>
+                            <value>${env.GENERATION_PATH}</value>
+                        </property>
+                        <property>
+                            <name>CRON_EXPRESSION</name>
+                            <value>${env.CRON_EXPRESSION}</value>
+                        </property>
+                        <property>
+                            <name>ADMIN_AUTH_VALUE</name>
+                            <value>${env.ADMIN_AUTH_VALUE}</value>
+                        </property>
+                    </appSettings>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>package-functions</id>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>obj</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
